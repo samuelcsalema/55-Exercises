@@ -1012,57 +1012,115 @@ def guia():
     if questao == 55:
         import random
         import copy
+        print('Questão: 55')
         nume = ['2♥', '3♥', '4♥', '5♥', '6♥', '7♥', '8♥', '9♥', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', '2♦', '3♦', '4♦', '5♦', '6♦', '7♦', '8♦', '9♦', '2♠', '3♠', '4♠', '5♠', '6♠', '7♠', '8♠', '9♠']
         letras = ['K♥', 'Q♥', 'J♥', 'K♣', 'Q♣', 'J♣', 'K♦', 'Q♦', 'J♦', 'K♠', 'Q♠', 'J♠']
         a = ['A♥', 'A♣', 'A♦', 'A♠']
         continuar = 's'
         while continuar == 's': 
-            pos = nume + letras + a
-            random.shuffle(pos)
+            baralho = (nume + letras + a)
+            random.shuffle(baralho)
+            mostrar_mao_dealer = []
             mostrar = []
             tentar = 's'
+            mao_dealer1 =[]
             mao1 = []
+            soma_dealer = 0
             soma = 0
+            mao_dealer = []
             mao = []
-            mao.append(random.choice(pos))
-            mao.append(random.choice(pos))
+            mao_dealer.append(random.choice(baralho))
+            mao_dealer.append(random.choice(baralho))
+            mao_dealer1.append(copy.deepcopy(mao_dealer))
+            mao.append(random.choice(baralho))
+            mao.append(random.choice(baralho))
             mao1.append(copy.deepcopy(mao))
             while tentar == 's' and soma < 21:
-                for c in mao:
-                    print(c)
-                    if c in pos:
-                        pos.remove(c)
+                for carta_mao in mao:
+                    if carta_mao in baralho:
+                        baralho.remove(carta_mao)
                 mostrar = [i for k in mao1 for i in k]
                 print("Sua mão:", mostrar)
-                for l in mao:  
-                    if l in letras:
+                for carta in mao:  
+                    if carta in letras:
                         soma += 10
-                    elif l in a:
-                        v = int(input('A valerá 11 ou 1?: '))
-                        if v == 11:
+                    elif carta in a:
+                        valor_As = int(input('A valerá 11 ou 1?: '))
+                        if valor_As == 11:
                             soma += 11
                         else:
                             soma += 1
                     else:
-                        soma += int(l[0])
+                        soma += int(carta[0])
                 if soma < 21:
                     tentar = input('Deseja outra carta (s/n)?: ')
                     if tentar == 's':
                         mao.clear()
-                        mao.append(random.choice(pos))
+                        mao.append(random.choice(baralho))
                         mao1.append(copy.deepcopy(mao))
                         continue
-                print(soma)
+                while soma_dealer < 16:
+                    for carta_dealer in mao_dealer:
+                        if carta_dealer in baralho:
+                            baralho.remove(carta_dealer)
+                    mostrar_mao_dealer = [i for k in mao_dealer1 for i in k]
+                    for dcarta in mao_dealer:  
+                        if dcarta in letras:
+                            soma_dealer += 10
+                        elif dcarta in a:
+                            if (soma_dealer + 11) < 21:
+                                soma_dealer += 11
+                            else:
+                                soma_dealer += 1
+                        else:
+                            soma_dealer += int(dcarta[0])
+                    mao_dealer.clear()
+                    mao_dealer.append(random.choice(baralho))
+                    mao_dealer1.append(copy.deepcopy(mao_dealer))
                 if soma == 21:
-                    print('Parabéns! Você ganhou')
+                    while soma_dealer < 21:
+                        for dc in mao_dealer:
+                            if dc in baralho:
+                                baralho.remove(dc)
+                        mostrar_mao_dealer = [i for k in mao_dealer1 for i in k]
+                        for dcarta in mao_dealer:  
+                            if dcarta in letras:
+                                soma_dealer += 10
+                            elif dcarta in a:
+                                if (soma_dealer + 11) < 21:
+                                    soma_dealer += 11
+                                else:
+                                    soma_dealer += 1
+                            else:
+                                soma_dealer += int(dcarta[0])
+                        mao_dealer.clear()
+                        mao_dealer.append(random.choice(baralho))
+                        mao_dealer1.append(copy.deepcopy(mao_dealer))
+                if soma == 21 and soma_dealer != 21:
+                    print('Parabéns! Você ganhou! A mão do dealer era', mostrar_mao_dealer)
+                    break
+                elif soma == 21 and soma_dealer == 21:
+                    print('Quase, foi um empate em 21!', mostrar, '=', mostrar_mao_dealer)
+                    break
+                elif soma > 21 and soma_dealer > 21:
+                    print('Os dois perderam! A mão do dealer era', mostrar_mao_dealer)
+                elif soma == soma_dealer:
+                    print('Quase, foi um empate!', mostrar_mao_dealer)
                     break
                 elif soma > 21:
-                    print('Você perdeu!', soma-21, 'a mais')
+                    print('Você perdeu!', soma-21, 'a mais!')
                     break
-                elif soma < 21:
-                    print('Você perdeu, faltaram', 21-soma)
-            soma = 0
+                elif soma < soma_dealer and soma_dealer <= 21:
+                    print('Você perdeu! A mão do dealer era', mostrar_mao_dealer)
+                    break
+                elif soma < soma_dealer and soma_dealer > 21:
+                    print('Você ganhou! A mão do dealer era', mostrar_mao_dealer)
+                    break
+                elif soma <= 21 and soma > soma_dealer:
+                    print('Você ganhou! A mão do dealer era', mostrar_mao_dealer)
+                    break
             continuar = input('Deseja outro jogo(s/n)?: ').lower()
+
 
 
 while True:
